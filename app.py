@@ -1,10 +1,3 @@
-'''
-OpenCV (Open Source Computer Vision) is a library with functions that mainly aiming real-time computer vision.
-OpenCV supports Deep Learning frameworks Caffe which has been implemented in this project.
-With OpenCV we have perform face detection using pre-trained
-deep learning face detector model which is shipped with the library.
-'''
-# Import the necessary packages
 import cv2
 import numpy as np
 import math
@@ -26,34 +19,23 @@ def highlightFace(net, frame, conf_threshold=0.7):
     # Grab the frame dimensions and convert it to a blob.
     blob = cv2.dnn.blobFromImage(frameOpencvDnn, 1.0, (300, 300), [
                                  104, 117, 123], True, False)
-    # Pass the blob through the network and obtain the detections and predictions.
     net.setInput(blob)
-    # net.forward() method detects the faces and stores the data in detections
     detections = net.forward()
-
     faceBoxes = []
 
-    # This for loop is for drawing rectangle on detected face.
     for i in range(detections.shape[2]):    # Looping over the detections.
-        # Extract the confidence (i.e., probability) associated with the prediction.
         confidence = detections[0, 0, i, 2]
         if confidence > conf_threshold:   # Compare it to the confidence threshold.
-            # Compute the (x, y)-coordinates of the bounding box for the face.
             x1 = int(detections[0, 0, i, 3]*frameWidth)
             y1 = int(detections[0, 0, i, 4]*frameHeight)
             x2 = int(detections[0, 0, i, 5]*frameWidth)
             y2 = int(detections[0, 0, i, 6]*frameHeight)
-            # Drawing the bounding box of the face.
             faceBoxes.append([x1, y1, x2, y2])
             cv2.rectangle(frameOpencvDnn, (x1, y1), (x2, y2),
                           (0, 255, 0), int(round(frameHeight/150)), 8)
     return frameOpencvDnn, faceBoxes
 
-
-# Gives input img to the prg for detection.
-# Using argparse library which was imported.
 parser = argparse.ArgumentParser()
-# If the input argument is not given it will skip this and open webcam for detection
 parser.add_argument('--image')
 
 args = parser.parse_args()
@@ -61,12 +43,11 @@ args = parser.parse_args()
 
 age_model = load_model('age_model.keras')
 
-
+# this function is able to generate a frame on the photo
 def gen_frames():
     faceProto = "opencv_face_detector.pbtxt"
     faceModel = "opencv_face_detector_uint8.pb"
 
-    #MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
     ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
     genderList = ['Male', 'Female']
 
@@ -118,7 +99,7 @@ def gen_frames():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImg) + b'\r\n')
 
-
+# this function is able to generate a frame on the vd
 def gen_frames_photo(img_file, age_model):
     # Load the face detection model
     faceProto = "opencv_face_detector.pbtxt"
@@ -193,7 +174,6 @@ def upload_file():
         img_ip = np.asarray(img, dtype="uint8")
         print(img_ip)
         return Response(gen_frames_photo(img_ip,age_model), mimetype='multipart/x-mixed-replace; boundary=frame')
-        # return 'file uploaded successfully'
 
 if __name__ == '__main__':
     app.run(debug=True)
