@@ -31,7 +31,7 @@ scikit-learn
 
 ## Installation
 
-git clone https://github.com/your_username/gender-age-prediction.git
+git clone https://github.com/your_username/Age-Gender-Prediction.git
 pip install -r requirements.txt
 Run the main script:  python app.py
 
