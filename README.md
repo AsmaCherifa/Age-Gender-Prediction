@@ -20,6 +20,14 @@ Download link: https://www.kaggle.com/datasets/jangedoo/utkface-new
 
 Environment: kaggle
 
+## Libraries
+pandas
+numpy
+matplotlib
+keras
+tensorflow
+scikit-learn
+
 
 ## Installation
 
